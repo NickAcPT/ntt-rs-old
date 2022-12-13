@@ -4,4 +4,12 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+# NTT Core
 ntt-core = { path = "../ntt-core" }
+
+# HTTP Server I/O
+actix-web = "4.2.1"
+
+# Configuration file
+toml = "0.5.9"
+serde = { version = "1.0.148", features = ["derive"], default-features = false }
