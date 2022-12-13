@@ -86,7 +86,7 @@ fabric.properties
 
 .idea/*
 
-#!.idea/codeStyles
+!.idea/codeStyles
 !.idea/runConfigurations
 
 ### Rust ###
@@ -106,4 +106,8 @@ Cargo.lock
 *.pdb
 
 # End of https://www.toptal.com/developers/gitignore/api/rust,clion+all
+
+# Frontend
+ntt-frontend/node_modules
+ntt-frontend/.idea
 /.env
