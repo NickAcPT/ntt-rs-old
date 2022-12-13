@@ -1,0 +1,10 @@
+# ###################################################
+# ##           ntt-rs configuration file           ##
+# ###################################################
+[server]
+address = "localhost"
+port = 7019
+
+[auth]
+client_id = ""
+client_secret = ""
