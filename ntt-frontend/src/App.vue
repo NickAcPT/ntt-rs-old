@@ -1,9 +1,28 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
-</script>
-
 <template>
-  <RouterView />
+  <div id="content">
+    <NarBar />
+    <RouterView />
+  </div>
 </template>
-
-<style scoped></style>
+<script lang="ts">
+import { defineComponent } from "vue";
+import NarBar from "@/components/NavBar.vue";
+export default defineComponent({
+  name: "App",
+  components: { NarBar },
+  setup() {
+    return {};
+  },
+});
+</script>
+<style lang="scss" scoped>
+#content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 100vh;
+  nav {
+    height: 100vh;
+  }
+}
+</style>
