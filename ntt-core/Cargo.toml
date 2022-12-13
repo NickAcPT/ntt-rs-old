@@ -1,0 +1,17 @@
+[package]
+name = "ntt-core"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# Easier error handling
+thiserror = { version = "1.0.37" }
+
+# Database I/O
+sea-orm = { version = "0.10.5", features = ["sqlx-postgres", "runtime-actix-rustls"] }
+
+# OAuth2 for interacting with Discord
+reqwest = { version = "0.11.13" }
+oauth2 = { version = "4.3.0" }

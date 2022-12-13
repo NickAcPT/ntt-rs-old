@@ -1,0 +1,5 @@
+[workspace]
+members = [
+    "ntt-core",
+    "ntt-backend"
+]
