@@ -18,7 +18,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 #content {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-start;
   height: 100vh;
   nav {

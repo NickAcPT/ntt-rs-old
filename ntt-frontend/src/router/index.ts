@@ -9,6 +9,11 @@ const router = createRouter({
       name: "home",
       component: HomeView,
     },
+    {
+      path: "/schedules",
+      name: "schedules",
+      component: () => import("../views/Schedules.vue"),
+    },
   ],
 });
 

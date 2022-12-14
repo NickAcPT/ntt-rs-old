@@ -48,8 +48,10 @@ export default defineComponent({
     text-align: center;
     transition: all 0.2s ease-in-out;
     font-size: large;
+    box-shadow: 0 5px 10px #3a3f48;
     &:hover {
       background-color: #3a3f48;
+      box-shadow: 0 0 0 #3a3f48;
     }
     svg {
       margin-right: 0.25rem;
@@ -63,7 +65,6 @@ export default defineComponent({
     margin-top: 1rem;
   }
   .tab:last-child {
-    // Make the last tab be at the bottom of the nav bar
     margin-top: auto;
   }
 }
