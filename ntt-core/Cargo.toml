@@ -10,7 +10,7 @@ edition = "2021"
 thiserror = { version = "1.0.37" }
 
 # Database I/O
-sea-orm = { version = "0.10.5", features = ["sqlx-postgres", "runtime-actix-rustls"] }
+sqlx = { version = "0.6.2", features = ["runtime-actix-rustls", "postgres", "chrono"] }
 
 # OAuth2 for interacting with GitHub
 reqwest = { version = "0.11.13" }
