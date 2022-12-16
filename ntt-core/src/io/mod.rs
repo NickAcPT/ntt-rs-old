@@ -1,2 +1,2 @@
-pub(crate) mod db;
+pub mod db_model;
 pub(crate) mod auth;

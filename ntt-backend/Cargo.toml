@@ -6,6 +6,8 @@ edition = "2021"
 [dependencies]
 # NTT Core
 ntt-core = { path = "../ntt-core" }
+uuid = "1.2.2"
+chrono = "0.4.23"
 
 # HTTP Server I/O
 actix-web = "4.2.1"

@@ -1,7 +1,7 @@
 use chrono::{DateTime, Utc};
 use serde_json::Value;
+use sqlx::postgres::types::PgInterval;
 use sqlx::FromRow;
-use sqlx::postgres::types::{PgInterval, PgTimeTz};
 use uuid::Uuid;
 
 #[derive(FromRow)]
@@ -18,14 +18,14 @@ pub struct User {
 pub struct TimeTable {
     id: Uuid,
     owner_id: Uuid,
-    name: String
+    name: String,
 }
 
 #[derive(FromRow)]
 pub struct TimeTablePermissionEntry {
     time_table_id: Uuid,
     user_id: Uuid,
-    can_edit: bool
+    can_edit: bool,
 }
 
 #[derive(FromRow)]
@@ -38,11 +38,11 @@ pub struct TimeTableEntry {
     start_date: chrono::NaiveDate,
     end_date: chrono::NaiveDate,
 
-    start_time: PgTimeTz,
-    end_time: PgTimeTz,
+    start_time: DateTime<Utc>,
+    end_time: DateTime<Utc>,
 
     duration: PgInterval,
-    recurrence_interval: Option<PgInterval>
+    recurrence_interval: Option<PgInterval>,
 }
 
 #[derive(FromRow)]
@@ -50,7 +50,7 @@ pub struct TimeTableEntryHistoryEntry {
     time_table_entry_id: Uuid,
     time: DateTime<Utc>,
     author_id: Uuid,
-    old_record: Value
+    old_record: Value,
 }
 
 #[derive(sqlx::Type)]
@@ -58,5 +58,5 @@ pub struct TimeTableEntryHistoryEntry {
 #[sqlx(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum TimeTableEntryType {
     Recurring,
-    OneTime
+    OneTime,
 }
