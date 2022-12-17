@@ -1,4 +1,5 @@
 use chrono::{DateTime, Utc};
+use serde::Serialize;
 use serde_json::Value;
 use sqlx::postgres::types::PgInterval;
 use sqlx::FromRow;
@@ -56,6 +57,7 @@ pub struct TimeTableEntryHistoryEntry {
 #[derive(sqlx::Type)]
 #[sqlx(type_name = "time_table_entry_type")]
 #[sqlx(rename_all = "SCREAMING_SNAKE_CASE")]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum TimeTableEntryType {
     Recurring,
     OneTime,

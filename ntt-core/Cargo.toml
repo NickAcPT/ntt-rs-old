@@ -10,9 +10,10 @@ edition = "2021"
 thiserror = { version = "1.0.37" }
 
 # Database I/O
-uuid = "1.2.2"
+uuid = { version = "1.2.2", features = ["serde", "v4"] }
 chrono = "0.4.23"
 sqlx = { version = "0.6.2", features = ["runtime-actix-rustls", "postgres", "chrono", "uuid", "json", "offline"] }
+serde = { version = "1.0.148", features = ["derive"], default-features = false }
 serde_json = "1.0.89"
 
 # OAuth2 for interacting with GitHub

@@ -6,12 +6,13 @@ edition = "2021"
 [dependencies]
 # NTT Core
 ntt-core = { path = "../ntt-core" }
-uuid = "1.2.2"
-chrono = "0.4.23"
-
+uuid = { version = "1.2.2" , features = ["serde", "v4"] }
+chrono = { version = "0.4.23", features=["serde"] }
 # HTTP Server I/O
 actix-web = "4.2.1"
 
 # Configuration file
 toml = "0.5.9"
 serde = { version = "1.0.148", features = ["derive"], default-features = false }
+
+typeshare = "1.0.0"
