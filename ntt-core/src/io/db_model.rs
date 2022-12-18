@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, NaiveDate, Utc, Weekday};
 use serde::Serialize;
 use serde_json::Value;
 use sqlx::postgres::types::PgInterval;
@@ -36,14 +36,13 @@ pub struct TimeTableEntry {
     entry_type: TimeTableEntryType,
     author_id: Uuid,
 
-    start_date: chrono::NaiveDate,
-    end_date: chrono::NaiveDate,
+    name: String,
+    description: Option<String>,
 
     start_time: DateTime<Utc>,
-    end_time: DateTime<Utc>,
-
     duration: PgInterval,
-    recurrence_interval: Option<PgInterval>,
+
+    repeating_data_id: Option<Uuid>,
 }
 
 #[derive(FromRow)]
@@ -52,6 +51,41 @@ pub struct TimeTableEntryHistoryEntry {
     time: DateTime<Utc>,
     author_id: Uuid,
     old_record: Value,
+}
+
+#[derive(FromRow)]
+pub struct TimeTableEntryRepeatingData {
+    id: Uuid,
+    entry_start_date: NaiveDate,
+    entry_end_date: NaiveDate,
+    weekly_repeating_interval: Vec<WeekDay>,
+}
+
+#[derive(sqlx::Type)]
+#[sqlx(type_name = "week_date")]
+#[sqlx(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum WeekDay {
+    Monday,
+    Tuesday,
+    Wednesday,
+    Thursday,
+    Friday,
+    Saturday,
+    Sunday,
+}
+
+impl From<WeekDay> for Weekday {
+    fn from(value: WeekDay) -> Self {
+        match value {
+            WeekDay::Monday => Weekday::Mon,
+            WeekDay::Tuesday => Weekday::Tue,
+            WeekDay::Wednesday => Weekday::Wed,
+            WeekDay::Thursday => Weekday::Thu,
+            WeekDay::Friday => Weekday::Fri,
+            WeekDay::Saturday => Weekday::Sat,
+            WeekDay::Sunday => Weekday::Sun,
+        }
+    }
 }
 
 #[derive(sqlx::Type)]
