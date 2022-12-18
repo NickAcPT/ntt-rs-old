@@ -62,7 +62,7 @@ pub struct TimeTableEntryRepeatingData {
 }
 
 #[derive(sqlx::Type)]
-#[sqlx(type_name = "week_date")]
+#[sqlx(type_name = "week_day")]
 #[sqlx(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum WeekDay {
     Monday,
