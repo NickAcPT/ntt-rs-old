@@ -1,5 +1,5 @@
-use chrono::{DateTime, Duration, NaiveDate, Utc, Weekday};
-use ntt_core::io::db_model::TimeTableEntryType;
+use chrono::{DateTime, Duration, NaiveDate, Utc};
+use ntt_core::io::db_model::{TimeTableEntryType, WeekDay};
 use serde::{Serialize, Serializer};
 use typeshare::typeshare;
 use uuid::Uuid;
@@ -98,5 +98,5 @@ pub struct OneTimeTimeTableEntry {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 #[serde(tag = "type", content = "content")]
 pub enum RepeatingInterval {
-    Weekly(Vec<Weekday>),
+    Weekly(Vec<WeekDay>),
 }

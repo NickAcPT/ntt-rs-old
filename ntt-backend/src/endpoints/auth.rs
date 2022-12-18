@@ -1,8 +1,8 @@
-use std::sync::Arc;
 use actix_web::http::header::LOCATION;
 use actix_web::http::StatusCode;
 use actix_web::web::Data;
 use actix_web::{get, HttpResponse, Responder};
+use std::sync::Arc;
 
 use ntt_core::io::auth::auth::NttAuthState;
 
