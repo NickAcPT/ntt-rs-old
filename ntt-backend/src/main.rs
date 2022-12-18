@@ -15,11 +15,9 @@ mod io;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-
     let fmt_subscriber = FmtSubscriber::new();
     tracing::subscriber::set_global_default(fmt_subscriber)
         .expect("setting tracing default failed");
-
 
     let config: Arc<NttBackendConfiguration> =
         Arc::new(toml::from_str(fs::read_to_string("config.toml")?.as_str())?);

@@ -1,5 +1,5 @@
 use chrono::{DateTime, NaiveDate, Utc, Weekday};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sqlx::postgres::types::PgInterval;
 use sqlx::FromRow;
@@ -60,34 +60,45 @@ pub struct TimeTableEntryRepeatingData {
     entry_end_date: NaiveDate,
     weekly_repeating_interval: Vec<WeekDay>,
 }
-
-#[derive(sqlx::Type)]
+/// The u8 represents the day of the week where 0 is Sunday. This is used in the [Javascript Date object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDay).
+#[derive(Debug, Clone, PartialEq, Eq, Copy, sqlx::Type, Serialize, Deserialize)]
 #[sqlx(type_name = "week_day")]
 #[sqlx(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum WeekDay {
-    Monday,
-    Tuesday,
-    Wednesday,
-    Thursday,
-    Friday,
-    Saturday,
-    Sunday,
+    Sunday = 0,
+    Monday = 1,
+    Tuesday = 2,
+    Wednesday = 3,
+    Thursday = 4,
+    Friday = 5,
+    Saturday = 6,
 }
-
-impl From<WeekDay> for Weekday {
+impl From<chrono::Weekday> for WeekDay{
+    fn from(value: Weekday) -> Self {
+        match value {
+            Weekday::Sun => WeekDay::Sunday,
+            Weekday::Mon => WeekDay::Monday,
+            Weekday::Tue => WeekDay::Tuesday,
+            Weekday::Wed => WeekDay::Wednesday,
+            Weekday::Thu => WeekDay::Thursday,
+            Weekday::Fri => WeekDay::Friday,
+            Weekday::Sat => WeekDay::Saturday,
+        }
+    }
+}
+impl From<WeekDay> for chrono::Weekday{
     fn from(value: WeekDay) -> Self {
         match value {
+            WeekDay::Sunday => Weekday::Sun,
             WeekDay::Monday => Weekday::Mon,
             WeekDay::Tuesday => Weekday::Tue,
             WeekDay::Wednesday => Weekday::Wed,
             WeekDay::Thursday => Weekday::Thu,
             WeekDay::Friday => Weekday::Fri,
             WeekDay::Saturday => Weekday::Sat,
-            WeekDay::Sunday => Weekday::Sun,
         }
     }
 }
-
 #[derive(sqlx::Type)]
 #[sqlx(type_name = "time_table_entry_type")]
 #[sqlx(rename_all = "SCREAMING_SNAKE_CASE")]
