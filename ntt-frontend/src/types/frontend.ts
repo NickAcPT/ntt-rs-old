@@ -1,78 +1,81 @@
 // Returns true or false depending on if the TimeTable has something happening today
 import type { EnhancedTimeTable } from "@/types/backend";
+import { Weekday } from "@/types/types";
 
 export type Event = {
   name: string;
-  where: string;
+  description: string;
   start: Date;
   end: Date;
 };
-export function getNextEvent(timeTable: EnhancedTimeTable): Event {
-  const now = new Date();
-  // Get the date of the Monday of the current week
-  const monday = new Date(
-    now.setDate(now.getDate() - now.getDay() + (now.getDay() == 0 ? -6 : 1))
-  );
-
+export type Calendar = {
+  events: Event[];
+};
+export function buildCalendar(
+  timeTable: EnhancedTimeTable,
+  start: Date,
+  end: Date
+): Calendar {
   if (timeTable.entries.length === 0) {
     return {
-      name: "Nothing",
-      where: "Nowhere",
-      start: now,
-      end: now,
+      events: [],
     };
   }
   // Filters out events that have already happened
-  let recurringExists = false;
-  timeTable.entries.filter((entry) => {
-    if (entry.entry_type === "OneTime") {
-      return entry.start_time > now;
-    } else if (entry.recurring_event) {
-      recurringExists = true;
-      return entry.recurring_event.end_date >= now;
-    } else {
-      console.error("Recurring event is undefined");
-    }
-  });
-  if (!recurringExists) {
-    timeTable.entries.sort((a, b) => {
-      return a.start_time.getTime() - b.start_time.getTime();
-    });
-    return {
-      name: "PENDING",
-      where: "PENDING",
-      start: timeTable.entries[0].start_time,
-      end: timeTable.entries[0].end_time,
-    };
-  }
   // Find the next event
   const events: Array<Event> = [];
   timeTable.entries.forEach((entry) => {
+    if (entry.start_date < start) {
+      return;
+    }
+    if (entry.start_date > end) {
+      return;
+    }
+    const startMonday = new Date(
+      start.setDate(
+        start.getDate() - start.getDay() + (start.getDay() == 0 ? -6 : 1)
+      )
+    );
     if (entry.entry_type === "OneTime") {
       events.push({
         name: "PENDING",
-        where: "PENDING",
+        description: "PENDING",
         start: entry.start_time,
         end: entry.end_time,
       });
     } else if (entry.recurring_event) {
       if (entry.recurring_event.repeats_every.type === "Weekly") {
-        entry.recurring_event.repeats_every.content.forEach((day) => {
-          const eventDate = new Date(monday);
-          eventDate.setDate(eventDate.getDate() + day);
-          eventDate.setHours(entry.start_time.getHours());
-          eventDate.setMinutes(entry.start_time.getMinutes());
-          eventDate.setSeconds(entry.start_time.getSeconds());
-          events.push({
-            name: "PENDING",
-            where: "PENDING",
-            start: eventDate,
-            end: new Date(eventDate.getTime() + entry.duration * 60000),
+        const monday = new Date(startMonday);
+        while (monday < end) {
+          const days: Weekday[] = entry.recurring_event?.repeats_every
+            .content as Weekday[];
+          days.forEach((day) => {
+            const start = new Date(monday);
+            start.setDate(start.getDate() + day);
+            start.setHours(entry.start_time.getHours());
+            start.setMinutes(entry.start_time.getMinutes());
+            const end = new Date(start);
+            end.setHours(entry.end_time.getHours());
+            end.setMinutes(entry.end_time.getMinutes());
+
+            if (day === monday.getDay()) {
+              const date = new Date(monday);
+              date.setDate(monday.getDate() + day);
+              events.push({
+                name: "PENDING",
+                description: "PENDING",
+                start: start,
+                end: end,
+              });
+            }
           });
-        });
+          monday.setDate(monday.getDate() + 7);
+        }
       }
     }
   });
   events.sort((a, b) => a.start.getTime() - b.start.getTime());
-  return events[0];
+  return {
+    events: events,
+  };
 }

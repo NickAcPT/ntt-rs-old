@@ -40,8 +40,6 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import type { TimeTableType } from "@/types/TimeTables";
-import { getNextEvent } from "@/types/TimeTables";
 
 export default defineComponent({
   name: "TimeTable",
