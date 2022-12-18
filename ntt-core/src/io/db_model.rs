@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc, Weekday};
+use chrono::{DateTime, NaiveDate, Utc, Weekday};
 use serde::Serialize;
 use serde_json::Value;
 use sqlx::postgres::types::PgInterval;
@@ -43,7 +43,6 @@ pub struct TimeTableEntry {
     duration: PgInterval,
 
     repeating_data_id: Option<Uuid>,
-    onetime_data_id: Option<Uuid>,
 }
 
 #[derive(FromRow)]
@@ -55,16 +54,11 @@ pub struct TimeTableEntryHistoryEntry {
 }
 
 #[derive(FromRow)]
-pub struct TimeTableEntryOneTimeData {
-    id: Uuid,
-    weekly_repeating_interval: Vec<WeekDay>,
-}
-
-#[derive(FromRow)]
 pub struct TimeTableEntryRepeatingData {
     id: Uuid,
-    entry_start_date: DateTime<Utc>,
-    entry_end_date: DateTime<Utc>,
+    entry_start_date: NaiveDate,
+    entry_end_date: NaiveDate,
+    weekly_repeating_interval: Vec<WeekDay>,
 }
 
 #[derive(sqlx::Type)]
