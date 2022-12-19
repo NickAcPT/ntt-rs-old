@@ -5,6 +5,7 @@ use actix_web::web::Data;
 use actix_web::{web, App, HttpServer};
 use tracing::info;
 use tracing_subscriber::FmtSubscriber;
+use crate::auth::middleware::HandleSession;
 
 use crate::config::NttBackendConfiguration;
 
@@ -13,6 +14,7 @@ mod config;
 mod endpoints;
 pub(crate) mod errors;
 mod io;
+pub mod api;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -31,8 +33,10 @@ async fn main() -> std::io::Result<()> {
     let auth = Data::new(config.auth);
     HttpServer::new(move || {
         App::new()
-            .service(web::scope("auth").service(endpoints::auth::login))
             .app_data(auth.clone())
+            .service(web::scope("auth").service(endpoints::auth::login))
+            .service(web::scope("api").wrap(HandleSession(false)))
+            .service(web::scope("").wrap(HandleSession(true)))
     })
     .bind((address, port))?
     .run()

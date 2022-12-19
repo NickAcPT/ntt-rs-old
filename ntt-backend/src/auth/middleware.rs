@@ -11,7 +11,7 @@ use tracing::error;
 use crate::auth::AuthConfiguration;
 
 
-pub struct HandleSession;
+pub struct HandleSession(pub bool);
 
 impl<S, B> Transform<S, ServiceRequest> for HandleSession
 where
@@ -28,12 +28,14 @@ where
     fn new_transform(&self, service: S) -> Self::Future {
         ready(Ok(SessionMiddleware {
             service: Rc::new(service),
+            should_redirect: self.0,
         }))
     }
 }
 
 pub struct SessionMiddleware<S> {
     service: Rc<S>,
+    should_redirect: bool,
 }
 
 impl<S, B> Service<ServiceRequest> for SessionMiddleware<S>
@@ -61,10 +63,14 @@ where
         let auth_configuration = data.unwrap().clone();
 
         let fut = self.service.call(req);
-
+        let should_redirect = self.should_redirect;
         Box::pin(async move {
+            let should_redirect = should_redirect;
             let config = auth_configuration;
             let res = fut.await?;
+            // Check if the user has a session cookie.
+            // If so then check if the session is valid.
+            // If not if should_redirect is true then redirect to the login page. Else return a 401.
             Ok(res)
         })
     }
