@@ -8,8 +8,8 @@ use actix_web::{
 };
 use futures::future::LocalBoxFuture;
 use tracing::error;
+use crate::auth::AuthConfiguration;
 
-use crate::config::{AuthConfiguration, NttBackendConfiguration};
 
 pub struct HandleSession;
 

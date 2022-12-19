@@ -1,13 +1,7 @@
 use serde::Deserialize;
+use crate::auth::AuthConfiguration;
 
-#[derive(Debug, Deserialize, Clone)]
-#[serde(tag = "type", content = "content")]
-pub enum AuthConfiguration {
-    GitHub{
-        client_id: String,
-        client_secret: String,
-    },
-}
+
 #[derive(Debug, Deserialize, Clone)]
 pub struct NttServerConfiguration {
     pub address: String,

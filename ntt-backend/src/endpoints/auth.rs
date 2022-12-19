@@ -5,8 +5,8 @@ use actix_web::{get, HttpResponse, Responder};
 use std::sync::Arc;
 
 use ntt_core::io::auth::auth::NttAuthState;
+use crate::auth::AuthConfiguration;
 
-use crate::config::{AuthConfiguration, NttBackendConfiguration};
 use crate::errors::NttBackendResult;
 
 #[get("/login")]
