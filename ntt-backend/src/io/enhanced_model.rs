@@ -7,7 +7,7 @@ use uuid::Uuid;
 // An "enhanced" database model contains additional information
 // that is stored in other tables which then joined together.
 // This enhanced model is used to serialize the data into JSON format and send it to the frontend.
-
+#[inline(always)]
 fn serialize_duration<S>(duration: &Duration, serializer: S) -> Result<S::Ok, S::Error>
 where
     S: Serializer,

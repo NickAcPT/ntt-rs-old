@@ -73,7 +73,7 @@ pub enum WeekDay {
     Friday = 5,
     Saturday = 6,
 }
-impl From<chrono::Weekday> for WeekDay{
+impl From<chrono::Weekday> for WeekDay {
     fn from(value: Weekday) -> Self {
         match value {
             Weekday::Sun => WeekDay::Sunday,
@@ -86,7 +86,7 @@ impl From<chrono::Weekday> for WeekDay{
         }
     }
 }
-impl From<WeekDay> for chrono::Weekday{
+impl From<WeekDay> for chrono::Weekday {
     fn from(value: WeekDay) -> Self {
         match value {
             WeekDay::Sunday => Weekday::Sun,

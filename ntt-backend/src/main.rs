@@ -8,6 +8,7 @@ use tracing_subscriber::FmtSubscriber;
 
 use crate::config::NttBackendConfiguration;
 
+pub mod auth;
 mod config;
 mod endpoints;
 pub(crate) mod errors;
@@ -19,19 +20,19 @@ async fn main() -> std::io::Result<()> {
     tracing::subscriber::set_global_default(fmt_subscriber)
         .expect("setting tracing default failed");
 
-    let config: Arc<NttBackendConfiguration> =
-        Arc::new(toml::from_str(fs::read_to_string("config.toml")?.as_str())?);
+    let config: NttBackendConfiguration =
+        toml::from_str(fs::read_to_string("config.toml")?.as_str())?;
 
-    let server_config = &config.server;
-    let address = server_config.address.to_owned();
+    let server_config = config.server;
+    let address = server_config.address;
     let port = server_config.port;
 
     info!("Starting web server at {}:{}", address, port);
-
+    let auth = Data::new(config.auth);
     HttpServer::new(move || {
         App::new()
             .service(web::scope("auth").service(endpoints::auth::login))
-            .app_data(Data::new(config.clone()))
+            .app_data(auth.clone())
     })
     .bind((address, port))?
     .run()

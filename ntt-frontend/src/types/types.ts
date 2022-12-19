@@ -1,11 +1,12 @@
 export type Uuid = string;
 
 export enum Weekday {
-  Sun = 0,
-  Mon = 1,
-  Tue = 2,
-  Wed = 3,
-  Thu = 4,
-  Fri = 5,
-  Sat = 6,
+  Sunday = 0,
+  Monday = 1,
+  Tuesday = 2,
+  Wednesday = 3,
+  Thursday = 4,
+  Friday = 5,
+  Saturday = 6,
+
 }
