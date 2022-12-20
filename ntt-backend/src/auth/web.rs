@@ -14,9 +14,22 @@ use ntt_core::io::auth::auth::NttAuthState;
 
 use crate::errors::NttBackendResult;
 pub fn configure(config: &mut web::ServiceConfig) {
-    config.service(login).service(call_back);
+    config.service(login).service(call_back).service(providers);
 }
-
+#[utoipa::path(
+get,
+path = "/auth/providers",
+responses(
+(status = 200, description = "A list of providers supported by this instance", body = [Providers])))
+]
+#[get("/providers")]
+pub async fn providers(application: Data<Application>) -> NttBackendResult<impl Responder> {
+    let mut providers = Vec::with_capacity(1);
+    if application.auth.github.is_some() {
+        providers.push(Providers::Github);
+    }
+    Ok(HttpResponse::Ok().json(providers))
+}
 #[get("/login/{provider}")]
 pub async fn login(
     provider: Path<Providers>,
@@ -76,16 +89,12 @@ impl<'de> Deserialize<'de> for CallBack {
                         let mut error_description = None;
                         let mut error_uri = None;
                         let mut state = None;
-                        for entry in map.next_entry::<String, String>() {
-                            if let Some((key, value)) = entry {
-                                match key.as_str() {
-                                    "error_description" => error_description = Some(value),
-                                    "error_uri" => error_uri = Some(value),
-                                    "state" => state = Some(value),
-                                    v => {
-                                        error!("Unknown key {}", v);
-                                    }
-                                }
+                        while let Some((key, value)) = map.next_entry::<String, String>()? {
+                            match key.as_str() {
+                                "error_description" => error_description = Some(value),
+                                "error_uri" => error_uri = Some(value),
+                                "state" => state = Some(value),
+                                _ => {}
                             }
                         }
                         Ok(CallBack::Error {

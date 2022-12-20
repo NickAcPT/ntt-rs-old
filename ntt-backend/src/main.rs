@@ -18,6 +18,15 @@ pub(crate) mod errors;
 mod io;
 use sqlx::postgres::PgPoolOptions;
 use tracing::field::debug;
+use utoipa::OpenApi;
+use utoipa_swagger_ui::{Config, SwaggerUi};
+
+#[derive(OpenApi)]
+#[openapi(
+    paths(crate::auth::web::providers),
+    components(schemas(crate::auth::Providers))
+)]
+struct ApiDoc;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -73,6 +82,7 @@ async fn main() -> std::io::Result<()> {
     info!("Starting web server at {}:{}", address, port);
     let database = Data::new(pool);
     let application = Data::new(config.application);
+    let openapi = ApiDoc::openapi();
 
     HttpServer::new(move || {
         App::new()
@@ -80,7 +90,9 @@ async fn main() -> std::io::Result<()> {
             .app_data(application.clone())
             .service(web::scope("auth").configure(auth::web::configure))
             .service(web::scope("api").wrap(HandleSession(false)))
-            .service(web::scope("").wrap(HandleSession(true)))
+            .service(web::scope("").wrap(HandleSession(true)).service(
+                SwaggerUi::new("/swagger-ui/{_:.*}").url("/api-doc/openapi.json", openapi.clone()),
+            ))
     })
     .bind((address, port))?
     .run()

@@ -23,7 +23,7 @@ serde = { version = "1.0.148", features = ["derive"], default-features = false }
 typeshare = "1.0.0"
 
 utoipa = { version = "2.4.2", features = ["actix_extras"] }
-
+utoipa-swagger-ui = { version = "3.0.1", features=["actix-web"] }
 thiserror = "1.0.37"
 
 tracing = "0.1.37"
