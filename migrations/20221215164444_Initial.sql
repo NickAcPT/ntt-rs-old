@@ -43,24 +43,41 @@ comment on column time_tables_permissions.user_id is 'The user who got extra per
 comment on column time_tables_permissions.can_edit is 'Whether the user can edit the time table or not';
 
 create type time_table_entry_type as enum ('RECURRING', 'ONE_TIME');
+create type week_day as enum ('MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY');
+
+create table time_table_entry_repeating_data
+(
+    id               uuid primary key not null default gen_random_uuid(),
+    entry_start_date date             not null, -- The date where this event starts happening
+    entry_end_date   date             not null,  -- The date where this entry stops happening
+    weekly_repeating_interval week_day[] not null default array[]::week_day[] -- The week days where this event happens
+);
+comment on table time_table_entry_repeating_data is 'Repeating data for a time table entry';
+comment on column time_table_entry_repeating_data.entry_start_date is 'The date where this event starts happening';
+comment on column time_table_entry_repeating_data.entry_end_date is 'The date where this entry stops happening';
+comment on column time_table_entry_repeating_data.weekly_repeating_interval is 'The week days where this event happens';
 
 -- Entries
 create table time_table_entries
 (
-    id                  uuid primary key      not null default gen_random_uuid(), -- The id of this entry
-    time_table_id       uuid                  not null,                           -- The time table
-    type                time_table_entry_type not null,                           -- The type of this time table entry
-    author_id           uuid                  not null,                           -- The user who created/last edited this entry
-    duration            interval              not null,                           -- The duration of this event
-    start_date          date                  not null,                           -- The starting date of this event (inclusive)
-    end_date            date                  not null,                           -- End date of this entry (inclusive)
-    recurrence_interval interval,                                                 -- The interval of recurrence of this event (null when ONE_TIME)
-    start_time          time with time zone   not null,                           -- The start time of this event
+    id                uuid primary key      not null default gen_random_uuid(), -- The id of this entry
+    time_table_id     uuid                  not null,                           -- The time table
+    type              time_table_entry_type not null,                           -- The type of this time table entry
+    author_id         uuid                  not null,                           -- The user who created/last edited this entry
+    duration          interval              not null,                           -- The duration of this event
+    start_time        timestamptz           not null,                           -- The start time of this event
+    name              text                  not null default 'Untitled',
+    description       text,
+    repeating_data_id uuid,
+    foreign key (repeating_data_id) references time_table_entry_repeating_data (id)
+        on delete cascade,
     foreign key (time_table_id) references time_tables (id)
         on delete cascade,
     foreign key (author_id) references users (id)
         on delete cascade
 );
+
+comment on column time_table_entries.start_time is 'The start time of this event';
 create index time_table_entries_time_table_id_index on time_table_entries (time_table_id);
 comment on table time_table_entries is 'The entries of a specific time table';
 comment on column time_table_entries.id is 'The id of this entry';
@@ -68,9 +85,6 @@ comment on column time_table_entries.time_table_id is 'The time table';
 comment on column time_table_entries.type is 'The type of this time table entry';
 comment on column time_table_entries.author_id is 'The user who created/last edited this entry';
 comment on column time_table_entries.duration is 'The duration of this event';
-comment on column time_table_entries.start_date is 'The starting date of this event (inclusive)';
-comment on column time_table_entries.end_date is 'End date of this entry (inclusive)';
-comment on column time_table_entries.recurrence_interval is 'The interval of recurrence of this event (null when ONE_TIME)';
 comment on column time_table_entries.start_time is 'The start time of this event';
 
 -- Entry change history
