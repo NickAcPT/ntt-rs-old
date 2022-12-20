@@ -1,6 +1,5 @@
-use serde::Deserialize;
 use crate::auth::AuthConfiguration;
-
+use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct NttServerConfiguration {

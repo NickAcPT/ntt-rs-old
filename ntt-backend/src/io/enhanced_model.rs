@@ -1,5 +1,6 @@
 use chrono::{DateTime, Duration, NaiveDate, Utc};
-use ntt_core::io::db_model::{TimeTableEntryType, WeekDay};
+use ntt_core::io::db_model::TimeTableEntryType;
+use ntt_core::weekday::WeekDay;
 use serde::{Serialize, Serializer};
 use typeshare::typeshare;
 use uuid::Uuid;

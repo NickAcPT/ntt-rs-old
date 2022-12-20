@@ -12,7 +12,7 @@ chrono = { version = "0.4.23", features = ["serde"] }
 actix-web = "4.2.1"
 actix-service = "2.0"
 futures = "0.3"
-
+once_cell = { version = "1.16.0" }
 # Configuration file
 toml = "0.5.9"
 serde = { version = "1.0.148", features = ["derive"], default-features = false }

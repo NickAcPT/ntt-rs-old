@@ -1,20 +1,20 @@
 use std::fs;
 use std::sync::Arc;
 
+use crate::auth::middleware::HandleSession;
 use actix_web::web::Data;
 use actix_web::{web, App, HttpServer};
 use tracing::info;
 use tracing_subscriber::FmtSubscriber;
-use crate::auth::middleware::HandleSession;
 
 use crate::config::NttBackendConfiguration;
 
+pub mod api;
 pub mod auth;
 mod config;
 mod endpoints;
 pub(crate) mod errors;
 mod io;
-pub mod api;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {

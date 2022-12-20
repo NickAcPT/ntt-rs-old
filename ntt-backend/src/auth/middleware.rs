@@ -1,6 +1,7 @@
 use std::future::{ready, Ready};
 use std::rc::Rc;
 
+use crate::auth::AuthConfiguration;
 use actix_web::web::Data;
 use actix_web::{
     dev::{forward_ready, Service, ServiceRequest, ServiceResponse, Transform},
@@ -8,8 +9,6 @@ use actix_web::{
 };
 use futures::future::LocalBoxFuture;
 use tracing::error;
-use crate::auth::AuthConfiguration;
-
 
 pub struct HandleSession(pub bool);
 
