@@ -42,7 +42,6 @@ pub(crate) struct EnhancedTimeTable {
     /// Entries in the time table.
     entries: Vec<EnhancedTimeTableEntry>,
 }
-
 /// A time table entry that is stored in the database.
 #[typeshare]
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
