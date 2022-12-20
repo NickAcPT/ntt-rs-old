@@ -1,10 +1,10 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 pub mod middleware;
 
 /// The configuration for the authentication system.
 /// Future versions could contain more options.
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Serialize)]
 #[serde(tag = "type", content = "content")]
 #[non_exhaustive]
 pub enum AuthConfiguration {

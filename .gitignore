@@ -109,3 +109,4 @@ Cargo.lock
 /.env
 .idea
 node_modules
+/test
