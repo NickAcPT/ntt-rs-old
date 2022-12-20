@@ -7,6 +7,12 @@ pub struct NttServerConfiguration {
     pub port: u16,
 }
 #[derive(Debug, Deserialize, Clone, Serialize)]
+pub struct Application {
+    pub url: String,
+    pub approve_everyone: bool,
+    pub auth: AuthConfiguration,
+}
+#[derive(Debug, Deserialize, Clone, Serialize)]
 pub struct DatabaseConfiguration {
     pub host: String,
     pub user: String,
@@ -25,23 +31,24 @@ impl Default for DatabaseConfiguration {
 }
 #[derive(Debug, Deserialize, Clone, Serialize)]
 pub struct NttBackendConfiguration {
-    pub auth: AuthConfiguration,
     pub server: NttServerConfiguration,
     pub database: DatabaseConfiguration,
+    pub application: Application,
 }
 
 impl Default for NttBackendConfiguration {
     fn default() -> Self {
         Self {
-            auth: AuthConfiguration::GitHub {
-                client_id: String::new(),
-                client_secret: String::new(),
-            },
             server: NttServerConfiguration {
                 address: "0.0.0.0".to_string(),
                 port: 5234,
             },
             database: Default::default(),
+            application: Application {
+                url: "http://localhost:5234".to_string(),
+                approve_everyone: true,
+                auth: AuthConfiguration::default(),
+            },
         }
     }
 }

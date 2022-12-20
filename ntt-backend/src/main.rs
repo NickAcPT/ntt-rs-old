@@ -14,7 +14,6 @@ use crate::config::NttBackendConfiguration;
 pub mod api;
 pub mod auth;
 mod config;
-mod endpoints;
 pub(crate) mod errors;
 mod io;
 use sqlx::postgres::PgPoolOptions;
@@ -72,14 +71,14 @@ async fn main() -> std::io::Result<()> {
             .expect("Failed to run migrations");
     }
     info!("Starting web server at {}:{}", address, port);
-    let auth = Data::new(config.auth);
     let database = Data::new(pool);
+    let application = Data::new(config.application);
 
     HttpServer::new(move || {
         App::new()
-            .app_data(auth.clone())
             .app_data(database.clone())
-            .service(web::scope("auth").service(endpoints::auth::login))
+            .app_data(application.clone())
+            .service(web::scope("auth").configure(auth::web::configure))
             .service(web::scope("api").wrap(HandleSession(false)))
             .service(web::scope("").wrap(HandleSession(true)))
     })

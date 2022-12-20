@@ -1,9 +1,11 @@
 use oauth2::basic::BasicClient;
 use oauth2::url::Url;
 use oauth2::{
-    AuthUrl, ClientId, ClientSecret, CsrfToken, PkceCodeChallenge, PkceCodeVerifier, TokenUrl,
+    AuthUrl, ClientId, ClientSecret, CsrfToken, PkceCodeChallenge, PkceCodeVerifier, RedirectUrl,
+    TokenUrl,
 };
 use once_cell::sync::Lazy;
+use std::borrow::Cow;
 
 use crate::errors::NttCoreResult;
 static GITHUB_AUTHORIZE_URL: Lazy<AuthUrl> = Lazy::new(|| {
@@ -23,7 +25,11 @@ pub struct NttAuthState {
 }
 
 impl NttAuthState {
-    pub fn new(client_id: String, client_secret: String) -> NttCoreResult<Self> {
+    pub fn new(
+        client_id: String,
+        client_secret: String,
+        redirect_uri: String,
+    ) -> NttCoreResult<Self> {
         let client = BasicClient::new(
             ClientId::new(client_id),
             Some(ClientSecret::new(client_secret)),
@@ -33,8 +39,10 @@ impl NttAuthState {
 
         let (pkce_challenge, pkce_verifier) = PkceCodeChallenge::new_random_sha256();
 
+        let redirect = RedirectUrl::new(redirect_uri)?;
         let (auth_url, csrf_token) = client
             .authorize_url(CsrfToken::new_random)
+            .set_redirect_uri(Cow::Owned(redirect))
             // Set the PKCE code challenge.
             .set_pkce_challenge(pkce_challenge)
             .url();

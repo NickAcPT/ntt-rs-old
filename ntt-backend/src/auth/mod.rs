@@ -1,16 +1,21 @@
 use serde::{Deserialize, Serialize};
 
 pub mod middleware;
-
+pub mod session;
+pub mod web;
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
+pub enum Providers {
+    Github,
+}
 /// The configuration for the authentication system.
 /// Future versions could contain more options.
+#[derive(Debug, Deserialize, Clone, Serialize, Default)]
+pub struct AuthConfiguration {
+    pub github: Option<GithubAuthConfiguration>,
+}
 #[derive(Debug, Deserialize, Clone, Serialize)]
-#[serde(tag = "type", content = "content")]
-#[non_exhaustive]
-pub enum AuthConfiguration {
-    /// Uses the Github OAuth2 authentication system.
-    GitHub {
-        client_id: String,
-        client_secret: String,
-    },
+
+pub struct GithubAuthConfiguration {
+    pub client_id: String,
+    pub client_secret: String,
 }

@@ -14,7 +14,8 @@ actix-service = "2.0"
 futures = "0.3"
 once_cell = { version = "1.16.0" }
 sqlx = { version = "0.6.2", features = ["runtime-actix-rustls", "postgres", "chrono", "uuid", "json", "offline"] }
-
+rand = "0.8.5"
+serde_qs ="0.10.1"
 # Configuration file
 toml = "0.5.9"
 serde = { version = "1.0.148", features = ["derive"], default-features = false }
